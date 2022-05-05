@@ -1,22 +1,27 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AddController;
+use App\Http\Controllers\ContractsController;
+use App\Http\Controllers\CreditsController;
+use App\Http\Controllers\FuelController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\TravelsController;
 use Illuminate\Support\Facades\Route;
 
 // Add routers
 Route::prefix('add')->group(function () {
     // Add pilots
-    Route::post('/pilots', 'AddController@pilots');
+    Route::post('/pilot', [AddController::class, 'pilots']);
     // Add ships
-    Route::post('/ships', 'AddController@ships');
+    Route::post('/ship', [AddController::class, 'ships']);
     // Publish contracts
-    Route::post('/contracts', 'AddController@contracts');
+    Route::post('/contracts', [AddController::class, 'contracts']);
 });
 
 // Travels routers
 Route::prefix('travels')->group(function () {
     // New travel
-    Route::post('/new', 'TravelsController@new');
+    Route::post('/new', [TravelsController::class, 'new']);
 
     /*
      * For more routers travels controller add here
@@ -26,9 +31,9 @@ Route::prefix('travels')->group(function () {
 // Contracts routers
 Route::prefix('contracts')->group(function () {
     // List all contracts
-    Route::get('/all', 'ContractsController@all');
+    Route::get('/all', [ContractsController::class, 'all']);
     // Accept new contracts
-    Route::post('/new', 'ContractsController@new');
+    Route::post('/new', [ContractsController::class, 'new']);
 
     /*
      * For more routers contracts controller add here
@@ -38,7 +43,7 @@ Route::prefix('contracts')->group(function () {
 // Credits routers
 Route::prefix('credits')->group(function () {
     // New travel
-    Route::post('/pay', 'CreditsController@pay');
+    Route::post('/pay', [CreditsController::class, 'pay']);
 
     /*
      * For more routers credits controller add here
@@ -48,7 +53,7 @@ Route::prefix('credits')->group(function () {
 // Fuel routers
 Route::prefix('fuel')->group(function () {
     // New travel
-    Route::post('/buy', 'FuelController@buy');
+    Route::post('/buy', [FuelController::class, 'buy']);
 
     /*
      * For more routers fuel controller add here
@@ -58,7 +63,7 @@ Route::prefix('fuel')->group(function () {
 // Reports routers
 Route::prefix('reports')->group(function () {
     // New travel
-    Route::post('/new', 'ReportsController@new');
+    Route::get('/all', [ReportsController::class, 'all']);
 
     /*
      * For more routers reports controller add here
