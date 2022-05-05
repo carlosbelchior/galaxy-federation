@@ -15,12 +15,17 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('pilot_id')->unsigned();
             $table->string('description');
             $table->bigInteger('payload')->unsigned();
             $table->string('origin_planet');
             $table->string('destination_planet');
             $table->bigInteger('value')->unsigned();
+            $table->integer('status_complete')->default(0);
+            $table->integer('accepted')->default(0);
             $table->timestamps();
+
+            $table->foreign('pilot_id')->references('id')->on('pilots');
         });
     }
 

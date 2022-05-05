@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('pilots', function (Blueprint $table) {
             $table->id();
-            $table->integer('pilot_certification')->unsigned();
+            $table->integer('pilot_certification')->unsigned()->unique();
             $table->string('name');
             $table->integer('age')->unsigned();
             $table->integer('credits');

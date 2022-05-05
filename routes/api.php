@@ -32,8 +32,10 @@ Route::prefix('travels')->group(function () {
 Route::prefix('contracts')->group(function () {
     // List all contracts
     Route::get('/all', [ContractsController::class, 'all']);
-    // Accept new contracts
-    Route::post('/new', [ContractsController::class, 'new']);
+    // Accept new contract
+    Route::post('/accept/{id}', [ContractsController::class, 'accept']);
+    // Complete contract
+    Route::post('/final/{id}', [ContractsController::class, 'final']);
 
     /*
      * For more routers contracts controller add here
