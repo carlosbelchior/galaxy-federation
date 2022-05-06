@@ -32,7 +32,7 @@ class ContractsController extends Controller
         /* Get all open contracts
         *  Status: 0 is open, 1 is closed
         */
-        $result = Contract::where('status_complete', 0)->orderBy('data_created')->get();
+        $result = Contract::where('status_complete', 0)->orderBy('created_at')->get();
 
         // Check no data
         if($result->isEmpty())

@@ -64,8 +64,12 @@ Route::prefix('fuel')->group(function () {
 
 // Reports routers
 Route::prefix('reports')->group(function () {
-    // New travel
-    Route::get('/all', [ReportsController::class, 'all']);
+    // Resource by planet
+    Route::get('/resource-planet', [ReportsController::class, 'resourcePlanet']);
+    // Resource by pilot
+    Route::get('/resource-pilot', [ReportsController::class, 'resourcePilot']);
+    // Transactions log
+    Route::get('/transactions', [ReportsController::class, 'transactions']);
 
     /*
      * For more routers reports controller add here
