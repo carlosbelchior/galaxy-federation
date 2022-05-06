@@ -20,7 +20,10 @@ class ContractsController extends Controller
         'Aqua-Calas' => 12, 
         'Calas-Andvari' => 20, 
         'Calas-Demeter' => 25, 
-        'Calas-Aqua' => 15
+        'Calas-Aqua' => 15,
+        'Andvari-Demeter' => 48,
+        'Demeter-Andvari' => 45,
+        'Aqua-Andvari' => 32,
     );
 
     // List all open contracts
@@ -75,31 +78,35 @@ class ContractsController extends Controller
         if($contract->status_complete == 1)
             return ['This trip has already been completed and your credits granted.'];
 
-        // Check ship fuel
         $ship = Ship::find($contract->payload);
+        $pilot = Pilot::find($contract->pilot_id);
+
+        // Check ship fuel
         $fuelShip = $this->shipsAvailable[$contract->origin_planet . '-' . $contract->destination_planet];
         if($ship->fuel_level < $fuelShip)
             return ['The ship does not have enough fuel for this trip. Replenishment is needed.'];
 
         // Get pilot and check location
-        $pilot = Pilot::find($contract->pilot_id);
         if($pilot->location_planet != $contract->origin_planet)
             return ['This pilot is not on the origin planet. Check if there are any other trips to the origin planet'];
+
+            // Get pilot and check location
+        if($ship->location_planet != $contract->origin_planet)
+            return ['This ship is not on the origin planet. Check if there are any other trips to the origin planet'];
 
         // Update status complete contract
         $contract->status_complete = 1;
         $contract->save();
 
         // Pay pilot credits
-        $pilot = Pilot::find($contract->pilot_id);
         $pilot->credits += $contract->value;
         $pilot->location_planet = $contract->destination_planet;
         $pilot->save();
 
         // Consume fuel
-        $ship = Ship::find($contract->payload);
         $ship->fuel_level -= $fuelShip;
-        $pilot->save();
+        $ship->location_planet = $contract->destination_planet;
+        $ship->save();
 
         // Register payment in log
         Report::create(['description' => $contract->description . ' paid ' . $contract->value]);

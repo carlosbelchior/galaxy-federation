@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('fuel_capacity')->unsigned();
             $table->integer('fuel_level');
             $table->integer('weight_capacity')->unsigned();
+            $table->string('location_planet');
             $table->timestamps();
         
             $table->foreign('pilot_id')->references('id')->on('pilots');

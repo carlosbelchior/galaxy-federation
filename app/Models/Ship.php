@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Ship extends Model
 {
     use HasFactory;
-    protected $fillable = ['fuel_capacity', 'fuel_level', 'weight_capacity'];
+    protected $fillable = ['fuel_capacity', 'fuel_level', 'location_planet', 'weight_capacity'];
 }

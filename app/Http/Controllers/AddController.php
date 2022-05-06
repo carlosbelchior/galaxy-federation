@@ -21,7 +21,10 @@ class AddController extends Controller
         'Aqua-Calas' => 12, 
         'Calas-Andvari' => 20, 
         'Calas-Demeter' => 25, 
-        'Calas-Aqua' => 15
+        'Calas-Aqua' => 15,
+        'Andvari-Demeter' => 48,
+        'Demeter-Andvari' => 45,
+        'Aqua-Andvari' => 32,
     );
 
     // Add new pilot
