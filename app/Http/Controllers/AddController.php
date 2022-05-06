@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contract;
 use App\Models\Pilot;
+use App\Models\Resource;
 use App\Models\Ship;
 use Illuminate\Http\Request;
 
@@ -99,8 +100,9 @@ class AddController extends Controller
         // Validate data input for new contract
         $validated = $request->validate([
             'description' => 'required|min:5',
-            'payload' => 'required|numeric|digits_between:1',
             'pilot' => 'required|numeric|digits_between:7,7',
+            'ship' => 'required|numeric|digits_between:1,10',
+            'payload' => 'required',
             'origin_planet' => 'required|min:4',
             'destination_planet' => 'required|min:4',
             'value' => 'required|numeric|digits_between:1',
@@ -125,14 +127,41 @@ class AddController extends Controller
             return ['Pilot not found.'];
 
         // Check ship
-        $ship = Ship::find($request->payload);
+        $ship = Ship::find($request->ship);
         if($ship->isEmpty())
             return ['Ship not found.'];
 
+        // Check payload
+        $payload = json_decode($request);
+        if(empty($payload->{'payload'})
+            return ['Payload cannot be empty.'];
+
+        // Check payload and max payload ship
+        $total_payload = 0;
+        foreach($payload->{'payload'} as $pay)
+            $total_payload += $pay;
+        if($ship->weight_capacity < $total_payload)
+            return ['The ship does not support this cargo. Reduce the weight.'];
+
         // Save contract
-        $contract = Contract::create($request->all());
+        $data = [
+            'description' => $request->description,
+            'pilot_id' => $pilot->id,
+            'ship_id' => $ship->id,
+            'payload' => $total_payload,
+            'origin_planet' => $request->origin_planet,
+            'destination_planet' => $request->destination_planet,
+            'value' => $request->value,
+        ];
+        $contract = Contract::create($data);
         if($contract)
+        {
+            // Save resource contract
+            foreach($payload->{'payload'} as $pay)
+                Resource::create(['contract_id' => $contract->id, 'name' => $pay['name'], 'weight' => $pay['weight']]);
+
             return ['Contract registered successfully.'];
+        }
 
         // Default error message
         return ['The Galaxy Federation alert!! An error occurred, check your connection and try again!!'];

@@ -78,7 +78,7 @@ class ContractsController extends Controller
         if($contract->status_complete == 1)
             return ['This trip has already been completed and your credits granted.'];
 
-        $ship = Ship::find($contract->payload);
+        $ship = Ship::find($contract->ship_id);
         $pilot = Pilot::find($contract->pilot_id);
 
         // Check ship fuel
@@ -109,7 +109,7 @@ class ContractsController extends Controller
         $ship->save();
 
         // Register payment in log
-        Report::create(['description' => $contract->description . ' paid ' . $contract->value]);
+        Report::create(['description' => $contract->description . ' paid: -₭' . $contract->value]);
 
         return ['Contract completed and payment made.'];
     }

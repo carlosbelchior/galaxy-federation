@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('pilot_id')->unsigned();
+            $table->bigInteger('ship_id')->unsigned();
             $table->string('description');
             $table->bigInteger('payload')->unsigned();
             $table->string('origin_planet');
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('pilot_id')->references('id')->on('pilots');
+            $table->foreign('ship_id')->references('id')->on('ships');
         });
     }
 
