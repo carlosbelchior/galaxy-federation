@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class ContractsController extends Controller
 {
     // Ships available
-    private $shipsAvailable = array(
+    private $routersAvailable = array(
         'Andvari-Aqua' => 13, 
         'Andvari-Calas' => 23, 
         'Demeter-Aqua' => 22, 
@@ -82,7 +82,7 @@ class ContractsController extends Controller
         $pilot = Pilot::find($contract->pilot_id);
 
         // Check ship fuel
-        $fuelShip = $this->shipsAvailable[$contract->origin_planet . '-' . $contract->destination_planet];
+        $fuelShip = $this->routersAvailable[$contract->origin_planet . '-' . $contract->destination_planet];
         if($ship->fuel_level < $fuelShip)
             return ['The ship does not have enough fuel for this trip. Replenishment is needed.'];
 

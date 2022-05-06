@@ -75,3 +75,12 @@ Route::prefix('reports')->group(function () {
      * For more routers reports controller add here
      */
 });
+
+// Travels routers
+Route::prefix('travels')->group(function () {
+    // Resource by planet
+    Route::get('/new', [TravelsController::class, 'new']);
+    /*
+     * For more routers reports controller add here
+     */
+});

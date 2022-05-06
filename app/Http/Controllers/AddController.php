@@ -13,7 +13,7 @@ class AddController extends Controller
     // Planets
     private $planets = array(1 => 'Andvari', 2 => 'Demeter', 3 => 'Aqua', 4 => 'Calas');
     // Ships available
-    private $shipsAvailable = array(
+    private $routersAvailable = array(
         'Andvari-Aqua' => 13, 
         'Andvari-Calas' => 23, 
         'Demeter-Aqua' => 22, 
@@ -117,7 +117,7 @@ class AddController extends Controller
             return ['Planet not found, please fill in correctly.'];
 
         // Check travel
-        $fuelShip = $this->shipsAvailable[$request->origin_planet . '-' . $request->destination_planet];
+        $fuelShip = $this->routersAvailable[$request->origin_planet . '-' . $request->destination_planet];
         if(!$fuelShip)
             return ['This route is not authorized.'];
 
@@ -132,13 +132,12 @@ class AddController extends Controller
             return ['Ship not found.'];
 
         // Check payload
-        $payload = json_decode($request);
-        if(empty($payload->{'payload'})
+        if(empty($request->payload))
             return ['Payload cannot be empty.'];
 
         // Check payload and max payload ship
         $total_payload = 0;
-        foreach($payload->{'payload'} as $pay)
+        foreach($request->payload as $pay)
             $total_payload += $pay;
         if($ship->weight_capacity < $total_payload)
             return ['The ship does not support this cargo. Reduce the weight.'];
@@ -157,7 +156,7 @@ class AddController extends Controller
         if($contract)
         {
             // Save resource contract
-            foreach($payload->{'payload'} as $pay)
+            foreach($request->payload as $pay)
                 Resource::create(['contract_id' => $contract->id, 'name' => $pay['name'], 'weight' => $pay['weight']]);
 
             return ['Contract registered successfully.'];
