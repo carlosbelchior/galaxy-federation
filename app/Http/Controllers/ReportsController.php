@@ -17,7 +17,7 @@ class ReportsController extends Controller
     {
         // Check qty travels
         if(Travel::all()->count() < 1)
-            return ['No data available!'];
+            return ['No data available.'];
     
         // Array data resources planets
         $resources_planets = [];
@@ -32,22 +32,33 @@ class ReportsController extends Controller
             // Get all travels by planet (received)
             $travels_received = Travel::select('id')->where('destination_planet', $planet)->get();
 
+            // Check exist data
+            if($travels_sent->isEmpty())
+                $resources_planets[$planet].push(['sent' => 'No data available']);
+
+            if($travels_received->isEmpty())
+                $resources_planets[$planet].push(['received' => 'No data available']);
+
             // Get resources by planet (sent)
-            $resources_sent = Resource::selectRaw('name, sum(weight) as total_weight')
-            ->groupBy('name')
-            ->whereIn('contract_id', $travels_sent)
-            ->get();
+            if(!$travels_sent->isEmpty())
+            {
+                $resources_sent = Resource::selectRaw('name, sum(weight) as total_weight')
+                ->groupBy('name')
+                ->whereIn('contract_id', $travels_sent)
+                ->get();
+                $resources_planets[$planet].push(['sent' => $resources_sent]);
+            }
 
-            // Get resources by planet (received)
-            $resources_received = Resource::selectRaw('name, sum(weight) as total_weight')
-            ->groupBy('name')
-            ->whereIn('contract_id', $travels_received)
-            ->get();
-
-            $resources_planets[$planet] = [
-                'sent' => $resources_sent,
-                'received' => $resources_received
-            ];
+            // Get resources by planet (sent)
+            if(!$travels_received->isEmpty())
+            {
+                // Get resources by planet (received)
+                $resources_received = Resource::selectRaw('name, sum(weight) as total_weight')
+                ->groupBy('name')
+                ->whereIn('contract_id', $travels_received)
+                ->get();
+                $resources_planets[$planet].push(['received' => $resources_received]);
+            }
             
         }
         

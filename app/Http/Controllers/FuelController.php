@@ -10,8 +10,8 @@ class FuelController extends Controller
     {
         // Validate data input for buy fuel
         $validated = $request->validate([
-            'ship' => 'required|numeric|digits_between:1,10',
             'pilot_certification' => 'required|numeric|digits_between:7,7',
+            'ship' => 'required|numeric|digits_between:1,10',
             'refill' => 'required|numeric|digits_between:1,10',
         ]);
 

@@ -35,7 +35,7 @@ Route::prefix('contracts')->group(function () {
     // Accept new contract
     Route::post('/accept/{id}', [ContractsController::class, 'accept']);
     // Complete contract
-    Route::post('/final/{id}', [ContractsController::class, 'final']);
+    Route::post('/finish/{id}', [ContractsController::class, 'finish']);
 
     /*
      * For more routers contracts controller add here

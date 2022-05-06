@@ -65,7 +65,7 @@ class ContractsController extends Controller
     }
 
     // Accept the contract
-    public function final($id)
+    public function finish($id)
     {
         // Get contract
         $contract = Contract::find($id);
