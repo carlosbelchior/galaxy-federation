@@ -102,6 +102,7 @@ class ReportsController extends Controller
         // Get contracts and resources by pilot
         foreach($pilots as $pilot)
         {
+            $resources_pilots[$pilot->name] = [];
             // Get contracts pilot
             $contracts = Contract::select('id')->where('pilot_id', $pilot->id)->where('status_complete', 1)->get();
             //Sum total resources
@@ -119,17 +120,14 @@ class ReportsController extends Controller
             $percentage = 0;
             foreach($resources as $resource)
             {
-                array_push($resources_pilots, [$pilot->name => []]);
-                $percentage = ($resource->weight / $total_resources['weight']) * 100;
-                $resources_pilots[$pilot->name] = [
-                    $resource->name => $percentage
-                ];
+                $percentage = ($resource->weight / $total_resources[0]->weight) * 100;
+                array_push($resources_pilots[$pilot->name], [$resource->name => $percentage]);
             }
             
         }
         
         // Return data
-        return $resources;
+        return $resources_pilots;
     }
 
     // Return all transactions
