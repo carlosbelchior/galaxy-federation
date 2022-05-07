@@ -33,22 +33,12 @@ Route::prefix('contracts')->group(function () {
     // List all contracts
     Route::get('/all', [ContractsController::class, 'all']);
     // Accept new contract
-    Route::post('/accept/{id}', [ContractsController::class, 'accept']);
+    Route::get('/accept/{id}', [ContractsController::class, 'accept']);
     // Complete contract
-    Route::post('/finish/{id}', [ContractsController::class, 'finish']);
+    Route::get('/finish/{id}', [ContractsController::class, 'finish']);
 
     /*
      * For more routers contracts controller add here
-     */
-});
-
-// Credits routers
-Route::prefix('credits')->group(function () {
-    // New travel
-    Route::post('/pay', [CreditsController::class, 'pay']);
-
-    /*
-     * For more routers credits controller add here
      */
 });
 
@@ -71,15 +61,6 @@ Route::prefix('reports')->group(function () {
     // Transactions log
     Route::get('/transactions', [ReportsController::class, 'transactions']);
 
-    /*
-     * For more routers reports controller add here
-     */
-});
-
-// Travels routers
-Route::prefix('travels')->group(function () {
-    // Resource by planet
-    Route::get('/new', [TravelsController::class, 'new']);
     /*
      * For more routers reports controller add here
      */

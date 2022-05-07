@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pilot;
 use App\Models\Ship;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TravelsController extends Controller
 {
@@ -28,25 +29,27 @@ class TravelsController extends Controller
 
     public function new(Request $request)
     {
-        // Validate data input for new travel
-        $validator = $request->validate([
+        // Validate input data
+        $input = $request->all();
+        $validator = Validator::make( $input, [
             'pilot_certification' => 'required|numeric|digits_between:7,7',
             'ship' => 'required|numeric|digits_between:1,10',
             'origin_planet' => 'required|min:4|max:7',
             'destination_planet' => 'required|min:4|max:7'
         ]);
-
-        if($validator->fails())
-            // Error message
-            return ['The Galaxy Federation alert!! One or more datas are invalids, please fill in correctly. Best regards!'];
+        if($validator->fails()) {
+            return response()->json([
+                $validator->errors()
+            ], 400);
+        }
         
         // Check planet exist
         if(!array_search($request->input('origin_planet'), $this->planets) || !array_search($request->input('destination_planet'), $this->planets))
             return ['Planet not found, please fill in correctly.'];
 
         // Get pilot
-        $pilot = Pilot::where('pilot_certification', $request->pilot)->first();
-        if($pilot->isEmpty())
+        $pilot = Pilot::where('pilot_certification', $request->pilot_certification)->first();
+        if(!$pilot)
             return ['Pilot not found.'];
 
         // Check location pilot
@@ -55,7 +58,7 @@ class TravelsController extends Controller
         
         // Get ship
         $ship = Ship::find($request->ship);
-        if($ship->isEmpty())
+        if(!$ship)
             return ['Ship not found.'];
 
         // Check location ship

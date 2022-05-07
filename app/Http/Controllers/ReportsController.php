@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Contract;
 use App\Models\Pilot;
 use App\Models\Report;
 use App\Models\Resource;
@@ -15,49 +16,68 @@ class ReportsController extends Controller
     // Return resources by planet
     public function resourcePlanet()
     {
-        // Check qty travels
-        if(Travel::all()->count() < 1)
+        // Check qty contracts
+        if(Contract::all()->count() < 1)
             return ['No data available.'];
     
         // Array data resources planets
-        $resources_planets = [];
+        $resources_planets = [
+            'Andvari' => [
+                'sent' => [],
+                'received' => []
+            ],
+            'Demeter' => [
+                'sent' => [],
+                'received' => []
+            ],
+            'Aqua' => [
+                'sent' => [],
+                'received' => []
+            ],
+            'Calas' => [
+                'sent' => [],
+                'received' => []
+            ],
+        ];
 
-        // Get travels and resources by pilot
+        // Get contracts and resources by pilot
         foreach($this->planets as $planet)
         {
             
-            // Get all travels by planet (sent)
-            $travels_sent = Travel::select('id')->where('origin_planet', $planet)->get();
+            // Get all contracts by planet (sent)
+            $contracts_sent = Contract::select('id')->where('origin_planet', $planet)->where('status_complete', 1)->get();
     
-            // Get all travels by planet (received)
-            $travels_received = Travel::select('id')->where('destination_planet', $planet)->get();
+            // Get all contracts by planet (received)
+            $contracts_received = Contract::select('id')->where('destination_planet', $planet)->where('status_complete', 1)->get();
 
             // Check exist data
-            if($travels_sent->isEmpty())
-                $resources_planets[$planet].push(['sent' => 'No data available']);
+            if($contracts_sent->isEmpty())
+                array_push($resources_planets[$planet]['sent'], 'No data available');
 
-            if($travels_received->isEmpty())
-                $resources_planets[$planet].push(['received' => 'No data available']);
+            if($contracts_received->isEmpty())
+                array_push($resources_planets[$planet]['received'], 'No data available');
 
             // Get resources by planet (sent)
-            if(!$travels_sent->isEmpty())
+            if(!$contracts_sent->isEmpty())
             {
                 $resources_sent = Resource::selectRaw('name, sum(weight) as total_weight')
                 ->groupBy('name')
-                ->whereIn('contract_id', $travels_sent)
+                ->whereIn('contract_id', $contracts_sent)
                 ->get();
-                $resources_planets[$planet].push(['sent' => $resources_sent]);
+                foreach($resources_sent as $resource)
+                    array_push($resources_planets[$planet]['sent'], [$resource->name => $resource->total_weight]);
             }
 
             // Get resources by planet (sent)
-            if(!$travels_received->isEmpty())
+            if(!$contracts_received->isEmpty())
             {
                 // Get resources by planet (received)
                 $resources_received = Resource::selectRaw('name, sum(weight) as total_weight')
                 ->groupBy('name')
-                ->whereIn('contract_id', $travels_received)
+                ->whereIn('contract_id', $contracts_received)
                 ->get();
-                $resources_planets[$planet].push(['received' => $resources_received]);
+                foreach($resources_received as $resource)
+                    array_push($resources_planets[$planet]['received'], [$resource->name => $resource->total_weight]);
             }
             
         }
@@ -69,8 +89,8 @@ class ReportsController extends Controller
     // Return resources by pilot
     public function resourcePilot()
     {
-        // Check qty travels
-        if(Travel::all()->count() < 1)
+        // Check qty contracts
+        if(Contract::all()->count() < 1)
             return ['No data available!'];
     
         // Array data resources pilots
@@ -79,42 +99,44 @@ class ReportsController extends Controller
         // Get all pilots
         $pilots = Pilot::all();
     
-        // Get travels and resources by pilot
+        // Get contracts and resources by pilot
         foreach($pilots as $pilot)
         {
-            // Get travels pilot
-            $travels = Travel::select('id')->where('pilot_id', $pilot->id)->get();
+            // Get contracts pilot
+            $contracts = Contract::select('id')->where('pilot_id', $pilot->id)->where('status_complete', 1)->get();
             //Sum total resources
-            $total_resources = Resource::selectRaw('sum(weight) as total_weight')
-            ->whereIn('contract_id', $travels)
+            $total_resources = Resource::selectRaw('sum(weight) as weight')
+            ->whereIn('contract_id', $contracts)
+            ->groupBy('contract_id')
             ->get();
             // Get resources by pilot
-            $resources = Resource::selectRaw('name, sum(weight) as total_weight')
+            $resources = Resource::selectRaw('name, sum(weight) as weight')
             ->groupBy('name')
-            ->whereIn('contract_id', $travels)
+            ->whereIn('contract_id', $contracts)
             ->get();
             
             //Calculate percentage by resource
             $percentage = 0;
             foreach($resources as $resource)
             {
-                $percentage = ($resource->total_weight / $total_resources->total_weight) * 100;
+                array_push($resources_pilots, [$pilot->name => []]);
+                $percentage = ($resource->weight / $total_resources['weight']) * 100;
                 $resources_pilots[$pilot->name] = [
-                    $resources->name => $percentage
+                    $resource->name => $percentage
                 ];
             }
             
         }
         
         // Return data
-        return $resources_pilots;
+        return $resources;
     }
 
     // Return all transactions
     public function transactions()
     {
         // Get all logs
-        $result = Report::orderBy('created_at', 'desc')->get();
+        $result = Report::select('description')->orderBy('created_at', 'desc')->get();
     
         // Check no data
         if($result->isEmpty())
