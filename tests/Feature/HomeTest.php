@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class ExampleTest extends TestCase
+class HomeTest extends TestCase
 {
     /**
      * A basic test example.
@@ -14,7 +14,7 @@ class ExampleTest extends TestCase
      */
     public function test_reports_transactions()
     {
-        $response = $this->get('/api/reports/transactions');
+        $response = $this->get('/');
         $response->assertStatus(200);
     }
 }
