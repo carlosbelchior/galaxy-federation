@@ -4,34 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Contract;
 use App\Models\Pilot;
+use App\Models\Planet;
 use App\Models\Resource;
+use App\Models\Router;
 use App\Models\Ship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AddController extends Controller
 {
-    // Planets
-    private $planets = array(1 => 'Andvari', 2 => 'Demeter', 3 => 'Aqua', 4 => 'Calas');
-    // Ships available
-    private $routersAvailable = array(
-        'Andvari-Aqua' => 13,
-        'Andvari-Calas' => 23,
-        'Demeter-Aqua' => 22,
-        'Demeter-Calas' => 25,
-        'Aqua-Demeter' => 30,
-        'Aqua-Calas' => 12,
-        'Calas-Andvari' => 20,
-        'Calas-Demeter' => 25,
-        'Calas-Aqua' => 15,
-        'Andvari-Demeter' => 48,
-        'Demeter-Andvari' => 45,
-        'Aqua-Andvari' => 32,
-    );
-
-    /*
-     * This above data can be easily transferred to a database, annotated task for system v2
-     */
 
     // Add new pilot
     public function pilots(Request $request)
@@ -52,12 +33,12 @@ class AddController extends Controller
         }
 
         // Check planet exist
-        if(!array_search($request->input('location_planet'), $this->planets))
-            return ['The Galaxy Federation alert!! Planet not found!!'];
+        if(!Planet::getPlanet($request->input('location_planet')))
+            return 'Planet not found.';
 
         // Check age is valid
         if($request->input('age') < 18)
-            return 'The Galaxy Federation alert!! Pilot does not have a minimum age requirement!!';
+            return 'Pilot does not have a minimum age requirement.';
 
         // Check certification
         if(Pilot::where('pilot_certification', $request->input('pilot_certification'))->get()->count() > 0)
@@ -90,8 +71,8 @@ class AddController extends Controller
         }
 
         // Check planet exist
-        if(!array_search($request->input('location_planet'), $this->planets))
-            return ['The Galaxy Federation alert!! Planet not found!!'];
+        if(!Planet::getPlanet($request->input('location_planet')))
+            return 'Planet not found.';
 
         // Check fuel capacity and level
         if($request->fuel_capacity < $request->fuel_level)
@@ -133,11 +114,11 @@ class AddController extends Controller
         }
 
         // Check planet exist
-        if(!array_search($request->input('origin_planet'), $this->planets) || !array_search($request->input('destination_planet'), $this->planets))
+        if(!Planet::getPlanet($request->input('origin_planet')) || !Planet::getPlanet($request->input('destination_planet')))
             return 'Planet not found, please fill in correctly.';
 
         // Check travel
-        $fuelShip = $this->routersAvailable[$request->origin_planet . '-' . $request->destination_planet];
+        $fuelShip = Router::getRouter($request->origin_planet, $request->destination_planet);
         if(!$fuelShip)
             return 'This route is not authorized.';
 

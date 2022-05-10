@@ -21,7 +21,7 @@ class PilotSeeder extends Seeder
     {
         DB::table('pilots')->insert([
             'pilot_certification' => rand(1000000,9999999),
-            'name' => Str::random(10),
+            'name' => 'Luke Skywalker',
             'age' => rand(18,65),
             'credits' => rand(100,500),
             'location_planet' => 'Andvari'

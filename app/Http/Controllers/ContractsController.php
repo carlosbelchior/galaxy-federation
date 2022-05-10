@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contract;
 use App\Models\Pilot;
 use App\Models\Report;
+use App\Models\Router;
 use App\Models\Ship;
 use Illuminate\Http\Request;
 
@@ -96,8 +97,8 @@ class ContractsController extends Controller
         $pilot = Pilot::find($contract->pilot_id);
 
         // Check ship fuel
-        $fuelShip = $this->routersAvailable[$contract->origin_planet . '-' . $contract->destination_planet];
-        if($ship->fuel_level < $fuelShip)
+        $fuelRouter = Router::getRouter($contract->origin_planet, $contract->destination_planet);
+        if($ship->fuel_level < $fuelRouter->coust)
             return ['The ship does not have enough fuel for this trip. Replenishment is needed.'];
 
         // Get pilot and check location
@@ -118,7 +119,7 @@ class ContractsController extends Controller
         $pilot->save();
 
         // Consume fuel
-        $ship->fuel_level -= $fuelShip;
+        $ship->fuel_level -= $fuelRouter->coust;
         $ship->location_planet = $contract->destination_planet;
         $ship->save();
 

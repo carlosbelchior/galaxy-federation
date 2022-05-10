@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pilot;
+use App\Models\Planet;
+use App\Models\Router;
 use App\Models\Ship;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -48,31 +50,31 @@ class TravelsController extends Controller
         }
 
         // Check planet exist
-        if(!array_search($request->input('origin_planet'), $this->planets) || !array_search($request->input('destination_planet'), $this->planets))
-            return ['Planet not found, please fill in correctly.'];
+        if(!Planet::getPlanet($request->input('origin_planet')) || !Planet::getPlanet($request->input('destination_planet')))
+            return 'Planet not found, please fill in correctly.';
 
         // Get pilot
         $pilot = Pilot::where('pilot_certification', $request->pilot_certification)->first();
         if(!$pilot)
-            return ['Pilot not found.'];
+            return 'Pilot not found.';
 
         // Check location pilot
         if($pilot->location_planet != $request->origin_planet)
-            return ['This pilot is not on the origin planet.'];
+            return 'This pilot is not on the origin planet.';
 
         // Get ship
         $ship = Ship::find($request->ship);
         if(!$ship)
-            return ['Ship not found.'];
+            return 'Ship not found.';
 
         // Check location ship
         if($ship->location_planet != $request->origin_planet)
-            return ['This ship is not on the origin planet.'];
+            return 'This ship is not on the origin planet.';
 
         // Check ship fuel
-        $fuelShip = $this->routersAvailable[$request->origin_planet . '-' . $request->destination_planet];
+        $fuelShip = Router::getRouter($request->origin_planet, $request->destination_planet)->coust;
         if($ship->fuel_level < $fuelShip)
-            return ['The ship does not have enough fuel for this trip. Replenishment is needed.'];
+            return 'The ship does not have enough fuel for this trip. Replenishment is needed.';
 
         // Update location pilot
         $pilot->location_planet = $request->destination_planet;
@@ -83,6 +85,6 @@ class TravelsController extends Controller
         $ship->location_planet = $request->destination_planet;
         $ship->save();
 
-        return ['Successful trip'];
+        return 'Successful trip';
     }
 }

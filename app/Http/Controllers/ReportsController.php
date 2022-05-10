@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contract;
 use App\Models\Pilot;
+use App\Models\Planet;
 use App\Models\Report;
 use App\Models\Resource;
 use App\Models\Travel;
@@ -44,22 +45,24 @@ class ReportsController extends Controller
             ],
         ];
 
+        $planets = Planet::all();
+
         // Get contracts and resources by pilot
-        foreach($this->planets as $planet)
+        foreach($planets as $planet)
         {
 
             // Get all contracts by planet (sent)
-            $contracts_sent = Contract::select('id')->where('origin_planet', $planet)->where('status_complete', 1)->get();
+            $contracts_sent = Contract::select('id')->where('origin_planet', $planet->name)->where('status_complete', 1)->get();
 
             // Get all contracts by planet (received)
-            $contracts_received = Contract::select('id')->where('destination_planet', $planet)->where('status_complete', 1)->get();
+            $contracts_received = Contract::select('id')->where('destination_planet', $planet->name)->where('status_complete', 1)->get();
 
             // Check exist data
             if($contracts_sent->isEmpty())
-                array_push($resources_planets[$planet]['sent'], 'No data available');
+                array_push($resources_planets[$planet->name]['sent'], 'No data available');
 
             if($contracts_received->isEmpty())
-                array_push($resources_planets[$planet]['received'], 'No data available');
+                array_push($resources_planets[$planet->name]['received'], 'No data available');
 
             // Get resources by planet (sent)
             if(!$contracts_sent->isEmpty())
@@ -69,7 +72,7 @@ class ReportsController extends Controller
                 ->whereIn('contract_id', $contracts_sent)
                 ->get();
                 foreach($resources_sent as $resource)
-                    array_push($resources_planets[$planet]['sent'], [$resource->name => $resource->total_weight]);
+                    array_push($resources_planets[$planet->name]['sent'], [$resource->name => $resource->total_weight]);
             }
 
             // Get resources by planet (sent)
@@ -81,7 +84,7 @@ class ReportsController extends Controller
                 ->whereIn('contract_id', $contracts_received)
                 ->get();
                 foreach($resources_received as $resource)
-                    array_push($resources_planets[$planet]['received'], [$resource->name => $resource->total_weight]);
+                    array_push($resources_planets[$planet->name]['received'], [$resource->name => $resource->total_weight]);
             }
 
         }
