@@ -5,9 +5,18 @@
 <p>PHP version 8.1 or higher</p>
 <p>MySQL 8.0.29 or higher</p>
 
+
 <p>I recommend using Docker and the laradock library</p>
 
+
+<p>Data flow:</p>
+<p>1 - pilot registration</p>
+<p>2 - ship registration</p>
+<p>The route above is the primary route of registration, after these registrations, the other routes can be used without problems as long as they respect the dependencies.</p>
+
+
 <br/>
+
 
 <p>After install use <code>composer install</code> and create the .env in project</p>
 <p>Create your database and set in .env, after run command <code>php artisan migrate --seed</code> for create your database and populate yourdatabase.</p>
