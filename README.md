@@ -128,6 +128,8 @@ Method: GET</p>
 <br/>
 </br/>
 
+<p>To perform the tests populate the database, you can use all the seeds available in the project or enter the data manually. After that use the command <code>php artisan test</code</p>
+
 <p><strong>REMEMBER THAT YOUR ACTION ARE MONITORED BY THE INTERGALACTIC AGENCY, BE CAREFUL.</strong></p>
 
 <p><strong>MAY THE FORCE BE WITH YOU!</strong></p>

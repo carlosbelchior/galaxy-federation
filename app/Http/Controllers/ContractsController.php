@@ -62,7 +62,7 @@ class ContractsController extends Controller
         // Get contract
         $contract = Contract::find($id);
 
-        if($contract->isEmpty())
+        if(!$contract)
         return response()->json([
             'Contract not found.'
         ], 400);
