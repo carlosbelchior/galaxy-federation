@@ -95,6 +95,25 @@ Method: GET</p>
 <p><u>No additional information is needed</u></p>
 
 
+<p><strong><u><em>Report </em></u><em><u>routers:</u></em></strong></p>
+<p>URL: /api/reports/routers<br />
+Method: GET</p>
+<p><u>No additional information is needed</u></p>
+
+
+<p><strong><u><em>Report </em></u><em><u>contracts:</u></em></strong></p>
+<p>URL: /api/reports/contracts<br />
+Method: GET</p>
+<p><u>No additional information is needed</u></p>
+
+
+<p><strong><u><em>Report </em></u><em><u>finish contracts by pilot:</u></em></strong></p>
+<p>URL: /api/reports/contracts-pilot/{pilot_certification}<br />
+Method: GET</p>
+<p>Data: pilot_certification (use in url after /contracts-pilot/</p>
+<p>REMOVE<b>{ }</b> in URL before use.</p>
+
+
 <p><strong><u><em>Report percentage of resource type transported by each pilot:</u></em></strong></p>
 <p>URL: /api/reports/resource-pilot<br />
 Method: GET</p>

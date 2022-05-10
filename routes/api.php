@@ -66,6 +66,12 @@ Route::prefix('reports')->group(function () {
     Route::get('/ships', [ReportsController::class, 'ships']);
     // Travels
     Route::get('/travels', [ReportsController::class, 'travels']);
+    // Routers available
+    Route::get('/routers', [ReportsController::class, 'routers']);
+    // Contracts finish
+    Route::get('/contracts', [ReportsController::class, 'contracts']);
+    // Contracts by pilot
+    Route::get('/contracts-pilot/{pilot_certification}', [ReportsController::class, 'contracts_pilot']);
 
     /*
      * For more routers reports controller add here

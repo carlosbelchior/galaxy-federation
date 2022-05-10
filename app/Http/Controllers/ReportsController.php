@@ -7,6 +7,7 @@ use App\Models\Pilot;
 use App\Models\Planet;
 use App\Models\Report;
 use App\Models\Resource;
+use App\Models\Router;
 use App\Models\Ship;
 use App\Models\Travel;
 
@@ -134,7 +135,7 @@ class ReportsController extends Controller
     // Return all transactions
     public function transactions()
     {
-        // Get all logs
+        // Get all transactions
         $result = Report::select('description')->orderBy('created_at', 'desc')->get();
 
         // Check no data
@@ -148,7 +149,7 @@ class ReportsController extends Controller
     // Return all pilots
     public function pilots()
     {
-        // Get all logs
+        // Get all pilots
         $pilots = Pilot::all();
 
         // Check no data
@@ -162,7 +163,7 @@ class ReportsController extends Controller
     // Return all ships
     public function ships()
     {
-        // Get all logs
+        // Get all ships
         $ships = Ship::all();
 
         // Check no data
@@ -176,7 +177,7 @@ class ReportsController extends Controller
     // Return all travels
     public function travels()
     {
-        // Get all logs
+        // Get all travels
         $travels = Travel::all();
 
         // Check no data
@@ -185,5 +186,45 @@ class ReportsController extends Controller
 
         // Show data
         return $travels;
+    }
+
+    // Return all routers available
+    public function routers()
+    {
+        // Get all routers
+        return Router::all();
+    }
+
+    // Return all routers available
+    public function contracts()
+    {
+        // Get all contracts
+        $contracts = Contract::with(['pilot', 'ship'])->where('status_complete', 1)->get();
+
+        // Check no data
+        if(!$contracts)
+            return 'No data available.';
+
+        // Show data
+        return $contracts;
+    }
+
+    // Return all contracts from pilot
+    public function contracts_pilot($pilot)
+    {
+        // Check pilot
+        $pilot = Pilot::where('pilot_certification', $pilot)->first();
+        if(!$pilot)
+            return 'Pilot not found.';
+
+        // Get all contracts
+        $contracts = Contract::where('pilot_id', $pilot->id)->get();
+
+        // Check no data
+        if(!$contracts)
+            return 'No data available.';
+
+        // Show data
+        return $contracts;
     }
 }

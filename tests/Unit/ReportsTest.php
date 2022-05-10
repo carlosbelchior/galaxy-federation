@@ -56,7 +56,7 @@ class ReportsTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // Report pilots - ok
+    // Report pilots - error
     public function test_error_pilots_transactions()
     {
         $response = $this->post('/api/reports/pilots');
@@ -70,7 +70,7 @@ class ReportsTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // Report ships - ok
+    // Report ships - error
     public function test_error_ships_transactions()
     {
         $response = $this->post('/api/reports/ships');
@@ -84,10 +84,60 @@ class ReportsTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // Report travels - ok
+    // Report travels - error
     public function test_error_travels_transactions()
     {
         $response = $this->post('/api/reports/travels');
         $response->assertStatus(405);
     }
+
+    // Report routers - ok
+    public function test_ok_routers_transactions()
+    {
+        $response = $this->get('/api/reports/routers');
+        $response->assertStatus(200);
+    }
+
+    // Report routers - error
+    public function test_error_routers_transactions()
+    {
+        $response = $this->post('/api/reports/routers');
+        $response->assertStatus(405);
+    }
+
+    // Report contracts - ok
+    public function test_ok_contracts_transactions()
+    {
+        $response = $this->get('/api/reports/contracts');
+        $response->assertStatus(200);
+    }
+
+    // Report contracts - error
+    public function test_error_contracts_transactions()
+    {
+        $response = $this->post('/api/reports/contracts');
+        $response->assertStatus(405);
+    }
+
+    // Report contracts - ok
+    public function test_ok_contractspilot_transactions()
+    {
+        $response = $this->get('/api/reports/contracts-pilot/1234567');
+        $response->assertStatus(200);
+    }
+
+    // Report contracts - error
+    public function test_error404_contractspilot_transactions()
+    {
+        $response = $this->post('/api/reports/contracts-pilot/');
+        $response->assertStatus(404);
+    }
+
+    // Report contracts - error
+    public function test_error_contractspilot_transactions()
+    {
+        $response = $this->post('/api/reports/contracts-pilot/1234567');
+        $response->assertStatus(405);
+    }
+
 }
