@@ -3,7 +3,7 @@
 <p><strong><u><em>Minimum system requirements:</em></u></strong></p>
 <p>NGINX or APACHE (Remember to configure your virtualhost)</p>
 <p>PHP version 8.1 or higher</p>
-<p>MySQL latest version</p>
+<p>MySQL 8.0.29 or highe</p>
 
 <p>I recommend using Docker and the laradock library</p>
 
