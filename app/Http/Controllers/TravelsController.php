@@ -6,32 +6,13 @@ use App\Models\Pilot;
 use App\Models\Planet;
 use App\Models\Router;
 use App\Models\Ship;
+use App\Models\Travel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class TravelsController extends Controller
 {
-    // Planets
-    private $planets = array(1 => 'Andvari', 2 => 'Demeter', 3 => 'Aqua', 4 => 'Calas');
-    // Ships available
-    private $routersAvailable = array(
-        'Andvari-Aqua' => 13,
-        'Andvari-Calas' => 23,
-        'Demeter-Aqua' => 22,
-        'Demeter-Calas' => 25,
-        'Aqua-Demeter' => 30,
-        'Aqua-Calas' => 12,
-        'Calas-Andvari' => 20,
-        'Calas-Demeter' => 25,
-        'Calas-Aqua' => 15,
-        'Andvari-Demeter' => 48,
-        'Demeter-Andvari' => 45,
-        'Aqua-Andvari' => 32,
-    );
-
-    /*
-     * This above data can be easily transferred to a database, annotated task for system v2
-     */
 
     public function new(Request $request)
     {
@@ -76,15 +57,34 @@ class TravelsController extends Controller
         if($ship->fuel_level < $fuelShip)
             return 'The ship does not have enough fuel for this trip. Replenishment is needed.';
 
+        DB::beginTransaction();
+
+        // Save travel log
+        $travel = Travel::create([
+            'pilot_id' => $pilot->id,
+            'ship_id' => $request->ship,
+            'origin_planet' => $request->origin_planet,
+            'destiny_planet' => $request->destination_planet
+        ]);
+
         // Update location pilot
         $pilot->location_planet = $request->destination_planet;
-        $pilot->save();
 
         // Update location ship and update fuel
         $ship->fuel_level -= $fuelShip;
         $ship->location_planet = $request->destination_planet;
-        $ship->save();
 
-        return 'Successful trip';
+        // Check successful
+        if($travel && $pilot->save() && $ship->save())
+        {
+            DB::commit();
+            return 'Successful trip.';
+        }
+        else {
+            DB::rollback();
+            return 'Error trip. Check data and try again.';
+        }
+
+        return 'Error trip. Check data and try again.';
     }
 }

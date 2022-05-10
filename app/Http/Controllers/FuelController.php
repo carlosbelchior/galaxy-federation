@@ -28,12 +28,12 @@ class FuelController extends Controller
         // Check pilot
         $pilot = Pilot::where('pilot_certification', $request->pilot_certification)->first();
         if(!$pilot)
-            return ['Pilot not found.'];
+            return 'Pilot not found.';
 
         // Check ship
         $ship = Ship::find($request->ship);
         if(!$ship)
-            return ['Ship not found.'];
+            return 'Ship not found.';
 
         // Check available fuel ship capacity
         if(($ship->fuel_level + $request->refill) > $ship->fuel_capacity)
@@ -45,7 +45,7 @@ class FuelController extends Controller
 
         // Check available credit pilot
         if($pilot->credits < ($request->refill * 7))
-            return ['Pilot does not have enough credit'];
+            return 'Pilot does not have enough credit.';
 
         // If everything went right, it generates the purchase of fuel
         $ship->fuel_level += $request->refill;
@@ -56,6 +56,6 @@ class FuelController extends Controller
         // Register buy fuel in log
         Report::create(['description' => $pilot->name . ' bought fuel: +₭' . ($request->refill * 7)]);
 
-        return ['Refueling done successfully, amount deducted from the pilot wallet.'];
+        return 'Refueling done successfully, amount deducted from the pilot wallet.';
     }
 }

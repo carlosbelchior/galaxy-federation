@@ -77,6 +77,24 @@ Method: GET</p>
 <p><u>No additional information is needed</u></p>
 
 
+<p><strong><u><em>Report </em></u><em><u>pilots:</u></em></strong></p>
+<p>URL: /api/reports/pilots<br />
+Method: GET</p>
+<p><u>No additional information is needed</u></p>
+
+
+<p><strong><u><em>Report </em></u><em><u>ships:</u></em></strong></p>
+<p>URL: /api/reports/ships<br />
+Method: GET</p>
+<p><u>No additional information is needed</u></p>
+
+
+<p><strong><u><em>Report </em></u><em><u>travels:</u></em></strong></p>
+<p>URL: /api/reports/travels<br />
+Method: GET</p>
+<p><u>No additional information is needed</u></p>
+
+
 <p><strong><u><em>Report percentage of resource type transported by each pilot:</u></em></strong></p>
 <p>URL: /api/reports/resource-pilot<br />
 Method: GET</p>

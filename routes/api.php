@@ -60,6 +60,12 @@ Route::prefix('reports')->group(function () {
     Route::get('/resource-pilot', [ReportsController::class, 'resourcePilot']);
     // Transactions log
     Route::get('/transactions', [ReportsController::class, 'transactions']);
+    // Pilots
+    Route::get('/pilots', [ReportsController::class, 'pilots']);
+    // Ships
+    Route::get('/ships', [ReportsController::class, 'ships']);
+    // Travels
+    Route::get('/travels', [ReportsController::class, 'travels']);
 
     /*
      * For more routers reports controller add here

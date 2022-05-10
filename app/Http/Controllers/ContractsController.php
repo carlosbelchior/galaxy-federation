@@ -41,7 +41,7 @@ class ContractsController extends Controller
 
         // Check no data
         if($result->isEmpty())
-            return ['No data available!'];
+            return 'No data available.';
 
         // Show data
         return $result;
@@ -60,7 +60,7 @@ class ContractsController extends Controller
 
         // Check status contract
         if($contract->status_complete == 1 || $contract->accepted == 1)
-            return ['This contract is already accepted or finalized'];
+            return 'This contract is already accepted or finalized.';
 
         /* Update status accepted contract
         * 1 for accepted
@@ -68,10 +68,10 @@ class ContractsController extends Controller
         */
         $contract->accepted = 1;
         if($contract->save())
-            return ['Contract successfully accepted'];
+            return 'Contract successfully accepted.';
 
         // Default error message
-        return ['The Galaxy Federation alert!! An error occurred, check your connection and try again!!'];
+        return 'The Galaxy Federation alert!! An error occurred, check your connection and try again.';
     }
 
     // Accept the contract
@@ -87,11 +87,11 @@ class ContractsController extends Controller
 
         // Check status accepted contract
         if($contract->accepted == 0)
-            return ['This contract has not yet been accepted.'];
+            return 'This contract has not yet been accepted.';
 
         // Check status complete contract
         if($contract->status_complete == 1)
-            return ['This trip has already been completed and your credits granted.'];
+            return 'This trip has already been completed and your credits granted.';
 
         $ship = Ship::find($contract->ship_id);
         $pilot = Pilot::find($contract->pilot_id);
@@ -99,15 +99,15 @@ class ContractsController extends Controller
         // Check ship fuel
         $fuelRouter = Router::getRouter($contract->origin_planet, $contract->destination_planet);
         if($ship->fuel_level < $fuelRouter->coust)
-            return ['The ship does not have enough fuel for this trip. Replenishment is needed.'];
+            return 'The ship does not have enough fuel for this trip. Replenishment is needed.';
 
         // Get pilot and check location
         if($pilot->location_planet != $contract->origin_planet)
-            return ['This pilot is not on the origin planet. Check if there are any other trips to the origin planet'];
+            return 'This pilot is not on the origin planet. Check if there are any other trips to the origin planet.';
 
             // Get pilot and check location
         if($ship->location_planet != $contract->origin_planet)
-            return ['This ship is not on the origin planet. Check if there are any other trips to the origin planet'];
+            return 'This ship is not on the origin planet. Check if there are any other trips to the origin planet.';
 
         // Update status complete contract
         $contract->status_complete = 1;
@@ -126,6 +126,6 @@ class ContractsController extends Controller
         // Register payment in log
         Report::create(['description' => $contract->description . ' paid: -₭' . $contract->value]);
 
-        return ['Contract completed and payment made.'];
+        return 'Contract completed and payment made.';
     }
 }

@@ -8,8 +8,10 @@ use App\Models\Planet;
 use App\Models\Resource;
 use App\Models\Router;
 use App\Models\Ship;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AddController extends Controller
 {
@@ -47,7 +49,7 @@ class AddController extends Controller
         // Save pilot
         $pilot = Pilot::create($request->all());
         if($pilot)
-            return 'Pilot registered successfully!!';
+            return 'Pilot registered successfully.';
 
         // Error message
         return 'The Galaxy Federation alert!! An error occurred, check your connection and try again!!';
@@ -148,23 +150,33 @@ class AddController extends Controller
         if($ship->weight_capacity < $total_payload)
             return 'The ship does not support this cargo. Reduce the weight.';
 
-        // Save contract
-        $contract = Contract::create([
-            'description' => $request->description,
-            'pilot_id' => $pilot['id'],
-            'ship_id' => $ship['id'],
-            'payload' => $total_payload,
-            'origin_planet' => $request->origin_planet,
-            'destination_planet' => $request->destination_planet,
-            'value' => $request->value,
-        ]);
-        if($contract)
-        {
-            // Save resource contract
+        // Start transaction
+        DB::beginTransaction();
+
+        // Check successfully
+        try {
+            // Save contract
+            $contract = Contract::create([
+                'description' => $request->description,
+                'pilot_id' => $pilot['id'],
+                'ship_id' => $ship['id'],
+                'payload' => $total_payload,
+                'origin_planet' => $request->origin_planet,
+                'destination_planet' => $request->destination_planet,
+                'value' => $request->value,
+            ]);
+
+            // Save resources
             foreach($request->payload as $key => $value)
                 Resource::create(['contract_id' => $contract->id, 'name' => $key, 'weight' => $value]);
 
+            DB::commit();
+
             return 'Contract registered successfully.';
+
+        } catch(Exception $e) {
+            DB::rollback();
+            return 'Error contract, check data and try again.';
         }
 
         // Default error message

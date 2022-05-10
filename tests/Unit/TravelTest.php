@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -24,5 +24,12 @@ class TravelTest extends TestCase
     {
         $response = $this->post('/api/travels/new');
         $response->assertStatus(400);
+    }
+
+    // Test new travel - error
+    public function test_error_method_travel()
+    {
+        $response = $this->get('/api/travels/new');
+        $response->assertStatus(405);
     }
 }

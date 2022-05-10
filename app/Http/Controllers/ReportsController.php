@@ -7,17 +7,11 @@ use App\Models\Pilot;
 use App\Models\Planet;
 use App\Models\Report;
 use App\Models\Resource;
+use App\Models\Ship;
 use App\Models\Travel;
 
 class ReportsController extends Controller
 {
-    // Planets
-    private $planets = array(1 => 'Andvari', 2 => 'Demeter', 3 => 'Aqua', 4 => 'Calas');
-
-    /*
-     * This above data can be easily transferred to a database, annotated task for system v2
-     */
-
     // Return resources by planet
     public function resourcePlanet()
     {
@@ -98,7 +92,7 @@ class ReportsController extends Controller
     {
         // Check qty contracts
         if(Contract::all()->count() < 1)
-            return ['No data available!'];
+            return 'No data available.';
 
         // Array data resources pilots
         $resources_pilots = [];
@@ -145,9 +139,51 @@ class ReportsController extends Controller
 
         // Check no data
         if($result->isEmpty())
-            return ['No data available!'];
+            return 'No data available.';
 
         // Show data
         return $result;
+    }
+
+    // Return all pilots
+    public function pilots()
+    {
+        // Get all logs
+        $pilots = Pilot::all();
+
+        // Check no data
+        if(!$pilots)
+            return 'No data available.';
+
+        // Show data
+        return $pilots;
+    }
+
+    // Return all ships
+    public function ships()
+    {
+        // Get all logs
+        $ships = Ship::all();
+
+        // Check no data
+        if(!$ships)
+            return 'No data available.';
+
+        // Show data
+        return $ships;
+    }
+
+    // Return all travels
+    public function travels()
+    {
+        // Get all logs
+        $travels = Travel::all();
+
+        // Check no data
+        if(!$travels)
+            return 'No data available.';
+
+        // Show data
+        return $travels;
     }
 }
