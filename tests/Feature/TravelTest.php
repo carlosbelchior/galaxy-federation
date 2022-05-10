@@ -3,20 +3,21 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class TravelTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
+    // Test new travel - ok
+    public function test_ok_travel()
     {
-        $response = $this->get('/');
-
+        $response = $this->post('/api/travel/new');
         $response->assertStatus(200);
+    }
+
+    // Test new travel - error
+    public function test_error_travel()
+    {
+        $response = $this->post('/api/travel/new');
+        $response->assertStatus(400);
     }
 }

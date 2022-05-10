@@ -3,15 +3,14 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Str;
 
 
 class AddTest extends TestCase
 {
-    // Test add new pilot
-    public function test_add_pilot()
+    // Test add new pilot - ok
+    public function test_ok_add_pilot()
     {
         $response = $this->post('/api/add/pilot', [
             'pilot_certification' => 1234567,
@@ -23,8 +22,8 @@ class AddTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // Test add new ship
-    public function test_add_ship()
+    // Test add new ship - ok
+    public function test_ok_add_ship()
     {
         $response = $this->post('/api/add/ship', [
             'fuel_capacity' => rand(400,500),
@@ -35,8 +34,8 @@ class AddTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // Test add new contract
-    public function test_add_contract()
+    // Test add new contract - ok
+    public function test_ok_add_contract()
     {
         $response = $this->post('/api/add/contracts', [
             'description' => Str::random(30),
@@ -51,5 +50,26 @@ class AddTest extends TestCase
             'value' => rand(100,500),
         ]);
         $response->assertStatus(200);
+    }
+
+    // Test add new pilot - error
+    public function test_error_add_pilot()
+    {
+        $response = $this->post('/api/add/pilot');
+        $response->assertStatus(400);
+    }
+
+    // Test add new ship - error
+    public function test_error_add_ship()
+    {
+        $response = $this->post('/api/add/ship');
+        $response->assertStatus(400);
+    }
+
+    // Test add new contract - error
+    public function test_error_add_contract()
+    {
+        $response = $this->post('/api/add/contracts');
+        $response->assertStatus(400);
     }
 }
