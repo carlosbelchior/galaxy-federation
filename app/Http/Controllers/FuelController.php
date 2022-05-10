@@ -27,7 +27,7 @@ class FuelController extends Controller
 
         // Check pilot
         $pilot = Pilot::where('pilot_certification', $request->pilot_certification)->first();
-        if(!$pilot)
+        if($pilot->isEmpty())
             return 'Pilot not found.';
 
         // Check ship
@@ -38,7 +38,7 @@ class FuelController extends Controller
         // Check available fuel ship capacity
         if(($ship->fuel_level + $request->refill) > $ship->fuel_capacity)
             return [
-                'Refill exceeds the ship maximum available. Available:' . 
+                'Refill exceeds the ship maximum available. Available:' .
                 ($ship['fuel_capacity'] - $ship->fuel_level) . ' | ' .
                 'Max: ' . $ship['fuel_capacity']
             ];

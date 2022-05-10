@@ -7,29 +7,11 @@ use App\Models\Pilot;
 use App\Models\Report;
 use App\Models\Router;
 use App\Models\Ship;
-use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ContractsController extends Controller
 {
-    // Ships available
-    private $routersAvailable = array(
-        'Andvari-Aqua' => 13,
-        'Andvari-Calas' => 23,
-        'Demeter-Aqua' => 22,
-        'Demeter-Calas' => 25,
-        'Aqua-Demeter' => 30,
-        'Aqua-Calas' => 12,
-        'Calas-Andvari' => 20,
-        'Calas-Demeter' => 25,
-        'Calas-Aqua' => 15,
-        'Andvari-Demeter' => 48,
-        'Demeter-Andvari' => 45,
-        'Aqua-Andvari' => 32,
-    );
-
-    /*
-     * This above data can be easily transferred to a database, annotated task for system v2
-     */
 
     // List all open contracts
     public function all()
@@ -80,7 +62,7 @@ class ContractsController extends Controller
         // Get contract
         $contract = Contract::find($id);
 
-        if(!$contract)
+        if($contract->isEmpty())
         return response()->json([
             'Contract not found.'
         ], 400);
@@ -109,23 +91,35 @@ class ContractsController extends Controller
         if($ship->location_planet != $contract->origin_planet)
             return 'This ship is not on the origin planet. Check if there are any other trips to the origin planet.';
 
-        // Update status complete contract
-        $contract->status_complete = 1;
-        $contract->save();
+        // Start transaction
+        DB::beginTransaction();
 
-        // Pay pilot credits
-        $pilot->credits += $contract->value;
-        $pilot->location_planet = $contract->destination_planet;
-        $pilot->save();
+        try {
 
-        // Consume fuel
-        $ship->fuel_level -= $fuelRouter->coust;
-        $ship->location_planet = $contract->destination_planet;
-        $ship->save();
+            // Update status complete contract
+            $contract->status_complete = 1;
+            $contract->save();
 
-        // Register payment in log
-        Report::create(['description' => $contract->description . ' paid: -₭' . $contract->value]);
+            // Pay pilot credits
+            $pilot->credits += $contract->value;
+            $pilot->location_planet = $contract->destination_planet;
+            $pilot->save();
 
-        return 'Contract completed and payment made.';
+            // Consume fuel
+            $ship->fuel_level -= $fuelRouter->coust;
+            $ship->location_planet = $contract->destination_planet;
+            $ship->save();
+
+            // Register payment in log
+            Report::create(['description' => $contract->description . ' paid: -₭' . $contract->value]);
+
+            DB::commit();
+
+            return 'Contract completed and payment made.';
+
+        } catch(Exception $e) {
+            DB::rollback();
+            return 'Error contract, check data and try again.';
+        }
     }
 }

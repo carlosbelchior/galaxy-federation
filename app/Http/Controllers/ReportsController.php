@@ -153,7 +153,7 @@ class ReportsController extends Controller
         $pilots = Pilot::all();
 
         // Check no data
-        if(!$pilots)
+        if($pilots->isEmpty())
             return 'No data available.';
 
         // Show data
@@ -167,7 +167,7 @@ class ReportsController extends Controller
         $ships = Ship::all();
 
         // Check no data
-        if(!$ships)
+        if($ships->isEmpty())
             return 'No data available.';
 
         // Show data
@@ -181,7 +181,7 @@ class ReportsController extends Controller
         $travels = Travel::all();
 
         // Check no data
-        if(!$travels)
+        if($travels->isEmpty())
             return 'No data available.';
 
         // Show data
@@ -202,7 +202,7 @@ class ReportsController extends Controller
         $contracts = Contract::with(['pilot', 'ship'])->where('status_complete', 1)->get();
 
         // Check no data
-        if(!$contracts)
+        if($contracts->isEmpty())
             return 'No data available.';
 
         // Show data

@@ -22,7 +22,7 @@ class AddController extends Controller
         // Validate input data
         $input = $request->all();
         $validator = Validator::make( $input, [
-            'pilot_certification' => 'required|numeric|digits_between:7,7',
+            'pilot_certification' => 'required|unique:pilots|numeric|digits_between:7,7',
             'name' => 'required|min:3|max:255',
             'age' => 'required|numeric|digits_between:2,10',
             'credits' => 'required|numeric',
@@ -41,10 +41,6 @@ class AddController extends Controller
         // Check age is valid
         if($request->input('age') < 18)
             return 'Pilot does not have a minimum age requirement.';
-
-        // Check certification
-        if(Pilot::where('pilot_certification', $request->input('pilot_certification'))->get()->count() > 0)
-            return 'There is already a registered pilot with this certification';
 
         // Save pilot
         $pilot = Pilot::create($request->all());
@@ -138,7 +134,7 @@ class AddController extends Controller
         if(count($request->payload) < 1)
             return 'Payload cannot be empty.';
 
-        // Check payload and max payload ship
+        // Sum total payload
         $total_payload = 0;
         foreach($request->payload as $key => $value)
         {
@@ -147,13 +143,14 @@ class AddController extends Controller
             else
                 $total_payload += $value;
         }
+
+        // Check max payload ship
         if($ship->weight_capacity < $total_payload)
             return 'The ship does not support this cargo. Reduce the weight.';
 
         // Start transaction
         DB::beginTransaction();
 
-        // Check successfully
         try {
             // Save contract
             $contract = Contract::create([
@@ -178,8 +175,5 @@ class AddController extends Controller
             DB::rollback();
             return 'Error contract, check data and try again.';
         }
-
-        // Default error message
-        return 'The Galaxy Federation alert!! An error occurred, check your connection and try again!!';
     }
 }
