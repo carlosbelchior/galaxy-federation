@@ -3,9 +3,14 @@
 <p><strong><u><em>Minimum system requirements:</em></u></strong></p>
 <p>NGINX or APACHE (Remember to configure your virtualhost)</p>
 <p>PHP version 8.1 or higher</p>
-<p>MySQL 8.0.29 or highe</p>
+<p>MySQL 8.0.29 or higher</p>
 
 <p>I recommend using Docker and the laradock library</p>
+
+<br/>
+
+<p>After install use <code>composer install</code> and create the .env in project</p>
+<p>Create your database and set in .env, after run command <code>php artisan migrate --seed</code> for create your database and populate yourdatabase.</p>
 
 <br/>
 <br/>
