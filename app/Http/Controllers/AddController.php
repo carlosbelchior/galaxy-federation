@@ -59,7 +59,7 @@ class AddController extends Controller
         $validator = Validator::make( $input, [
             'fuel_capacity' => 'required|numeric|digits_between:1,10',
             'fuel_level' => 'required|numeric|digits_between:1,10',
-            'weight_capacity' => 'required|numeric|digits_between:1,10',
+            'weight_capacity' => 'required|regex:/^[0-9]+(\.[0-9][0-9]?)?$/',
             'location_planet' => 'required|min:4'
         ]);
         if($validator->fails()) {

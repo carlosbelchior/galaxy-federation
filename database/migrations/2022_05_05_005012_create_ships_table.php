@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('fuel_capacity')->unsigned();
             $table->integer('fuel_level');
-            $table->integer('weight_capacity')->unsigned();
+            $table->double('weight_capacity', 10,2)->unsigned();
             $table->string('location_planet');
             $table->timestamps();
         });

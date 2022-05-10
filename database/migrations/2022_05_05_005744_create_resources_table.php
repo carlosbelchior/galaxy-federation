@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('contract_id')->unsigned();
             $table->string('name');
-            $table->integer('weight')->unsigned();
+            $table->double('weight', 10, 2)->unsigned();
             $table->timestamps();
 
             $table->foreign('contract_id')->references('id')->on('contracts');

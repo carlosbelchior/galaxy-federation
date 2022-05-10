@@ -36,7 +36,7 @@ Method: POST</p>
 <p><strong><u><em>Add ship:</em></u></strong></p>
 <p>URL: /api/add/ship<br />
 Method: POST</p>
-<p>Data: fuel_capacity, fuel_level, weight_capacity, location_planet</p>
+<p>Data: fuel_capacity, fuel_level, weight_capacity (double format 0.00), location_planet</p>
 
 
 <p><strong><u><em>Add contract:</em></u></strong></p>
