@@ -13,13 +13,17 @@ class ReportsController extends Controller
     // Planets
     private $planets = array(1 => 'Andvari', 2 => 'Demeter', 3 => 'Aqua', 4 => 'Calas');
 
+    /*
+     * This above data can be easily transferred to a database, annotated task for system v2
+     */
+
     // Return resources by planet
     public function resourcePlanet()
     {
         // Check qty contracts
         if(Contract::all()->count() < 1)
             return ['No data available.'];
-    
+
         // Array data resources planets
         $resources_planets = [
             'Andvari' => [
@@ -43,10 +47,10 @@ class ReportsController extends Controller
         // Get contracts and resources by pilot
         foreach($this->planets as $planet)
         {
-            
+
             // Get all contracts by planet (sent)
             $contracts_sent = Contract::select('id')->where('origin_planet', $planet)->where('status_complete', 1)->get();
-    
+
             // Get all contracts by planet (received)
             $contracts_received = Contract::select('id')->where('destination_planet', $planet)->where('status_complete', 1)->get();
 
@@ -79,9 +83,9 @@ class ReportsController extends Controller
                 foreach($resources_received as $resource)
                     array_push($resources_planets[$planet]['received'], [$resource->name => $resource->total_weight]);
             }
-            
+
         }
-        
+
         // Return data
         return $resources_planets;
     }
@@ -92,13 +96,13 @@ class ReportsController extends Controller
         // Check qty contracts
         if(Contract::all()->count() < 1)
             return ['No data available!'];
-    
+
         // Array data resources pilots
         $resources_pilots = [];
 
         // Get all pilots
         $pilots = Pilot::all();
-    
+
         // Get contracts and resources by pilot
         foreach($pilots as $pilot)
         {
@@ -115,7 +119,7 @@ class ReportsController extends Controller
             ->groupBy('name')
             ->whereIn('contract_id', $contracts)
             ->get();
-            
+
             //Calculate percentage by resource
             $percentage = 0;
             foreach($resources as $resource)
@@ -123,9 +127,9 @@ class ReportsController extends Controller
                 $percentage = ($resource->weight / $total_resources[0]->weight) * 100;
                 array_push($resources_pilots[$pilot->name], [$resource->name => $percentage]);
             }
-            
+
         }
-        
+
         // Return data
         return $resources_pilots;
     }
@@ -135,7 +139,7 @@ class ReportsController extends Controller
     {
         // Get all logs
         $result = Report::select('description')->orderBy('created_at', 'desc')->get();
-    
+
         // Check no data
         if($result->isEmpty())
             return ['No data available!'];

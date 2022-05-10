@@ -15,19 +15,23 @@ class AddController extends Controller
     private $planets = array(1 => 'Andvari', 2 => 'Demeter', 3 => 'Aqua', 4 => 'Calas');
     // Ships available
     private $routersAvailable = array(
-        'Andvari-Aqua' => 13, 
-        'Andvari-Calas' => 23, 
-        'Demeter-Aqua' => 22, 
-        'Demeter-Calas' => 25, 
-        'Aqua-Demeter' => 30, 
-        'Aqua-Calas' => 12, 
-        'Calas-Andvari' => 20, 
-        'Calas-Demeter' => 25, 
+        'Andvari-Aqua' => 13,
+        'Andvari-Calas' => 23,
+        'Demeter-Aqua' => 22,
+        'Demeter-Calas' => 25,
+        'Aqua-Demeter' => 30,
+        'Aqua-Calas' => 12,
+        'Calas-Andvari' => 20,
+        'Calas-Demeter' => 25,
         'Calas-Aqua' => 15,
         'Andvari-Demeter' => 48,
         'Demeter-Andvari' => 45,
         'Aqua-Andvari' => 32,
     );
+
+    /*
+     * This above data can be easily transferred to a database, annotated task for system v2
+     */
 
     // Add new pilot
     public function pilots(Request $request)
@@ -46,7 +50,7 @@ class AddController extends Controller
                 $validator->errors()
             ], 400);
         }
-        
+
         // Check planet exist
         if(!array_search($request->input('location_planet'), $this->planets))
             return ['The Galaxy Federation alert!! Planet not found!!'];
@@ -103,7 +107,7 @@ class AddController extends Controller
         $ship = Ship::create($request->all());
         if($ship)
             return 'Ship registered successfully.';
-        
+
         // Default error message
         return 'The Galaxy Federation alert!! An error occurred, check your connection and try again!!';
     }

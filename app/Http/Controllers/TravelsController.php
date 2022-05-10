@@ -13,19 +13,23 @@ class TravelsController extends Controller
     private $planets = array(1 => 'Andvari', 2 => 'Demeter', 3 => 'Aqua', 4 => 'Calas');
     // Ships available
     private $routersAvailable = array(
-        'Andvari-Aqua' => 13, 
-        'Andvari-Calas' => 23, 
-        'Demeter-Aqua' => 22, 
-        'Demeter-Calas' => 25, 
-        'Aqua-Demeter' => 30, 
-        'Aqua-Calas' => 12, 
-        'Calas-Andvari' => 20, 
-        'Calas-Demeter' => 25, 
+        'Andvari-Aqua' => 13,
+        'Andvari-Calas' => 23,
+        'Demeter-Aqua' => 22,
+        'Demeter-Calas' => 25,
+        'Aqua-Demeter' => 30,
+        'Aqua-Calas' => 12,
+        'Calas-Andvari' => 20,
+        'Calas-Demeter' => 25,
         'Calas-Aqua' => 15,
         'Andvari-Demeter' => 48,
         'Demeter-Andvari' => 45,
         'Aqua-Andvari' => 32,
     );
+
+    /*
+     * This above data can be easily transferred to a database, annotated task for system v2
+     */
 
     public function new(Request $request)
     {
@@ -42,7 +46,7 @@ class TravelsController extends Controller
                 $validator->errors()
             ], 400);
         }
-        
+
         // Check planet exist
         if(!array_search($request->input('origin_planet'), $this->planets) || !array_search($request->input('destination_planet'), $this->planets))
             return ['Planet not found, please fill in correctly.'];
@@ -54,8 +58,8 @@ class TravelsController extends Controller
 
         // Check location pilot
         if($pilot->location_planet != $request->origin_planet)
-            return ['This pilot is not on the origin planet.']; 
-        
+            return ['This pilot is not on the origin planet.'];
+
         // Get ship
         $ship = Ship::find($request->ship);
         if(!$ship)
@@ -63,7 +67,7 @@ class TravelsController extends Controller
 
         // Check location ship
         if($ship->location_planet != $request->origin_planet)
-            return ['This ship is not on the origin planet.']; 
+            return ['This ship is not on the origin planet.'];
 
         // Check ship fuel
         $fuelShip = $this->routersAvailable[$request->origin_planet . '-' . $request->destination_planet];
