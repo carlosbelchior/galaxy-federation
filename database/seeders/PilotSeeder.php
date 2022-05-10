@@ -24,7 +24,7 @@ class PilotSeeder extends Seeder
             'name' => Str::random(10),
             'age' => rand(18,65),
             'credits' => rand(100,500),
-            'location_planet' => $this->planets[rand(1,4)]
+            'location_planet' => 'Andvari'
         ]);
     }
 }

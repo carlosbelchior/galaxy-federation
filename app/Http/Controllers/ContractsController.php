@@ -48,6 +48,11 @@ class ContractsController extends Controller
         // Get contract
         $contract = Contract::find($id);
 
+        if(!$contract)
+        return response()->json([
+            'Contract not found.'
+        ], 400);
+
         // Check status contract
         if($contract->status_complete == 1 || $contract->accepted == 1)
             return ['This contract is already accepted or finalized'];
@@ -69,6 +74,11 @@ class ContractsController extends Controller
     {
         // Get contract
         $contract = Contract::find($id);
+
+        if(!$contract)
+        return response()->json([
+            'Contract not found.'
+        ], 400);
 
         // Check status accepted contract
         if($contract->accepted == 0)
