@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PilotSeeder::class,
             ShipSeeder::class,
             ContractSeeder::class,
+            ResourceSeeder::class,
         ]);
     }
 }
